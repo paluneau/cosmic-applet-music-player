@@ -135,6 +135,9 @@ pub fn view(app: &CosmicAppletMusic) -> Element<'_, Message> {
             })
             .on_middle_press(Message::MiddleClick);
     
+    // Automatic resize will not work in windowed mode,
+    // but it works fine if the applet is in the dock/panel.
+    // Windowed mode is not the goal of this app anyway.
     cosmic::widget::autosize::autosize(
         row![
             back_button
