@@ -15,6 +15,10 @@ pub struct AppConfig {
     pub custom_play_icon: Option<String>,
     #[serde(default)]
     pub custom_pause_icon: Option<String>,
+    #[serde(default)]
+    pub custom_next_icon: Option<String>,
+    #[serde(default)]
+    pub custom_previous_icon: Option<String>,
     pub show_controls: bool
 }
 
@@ -28,6 +32,8 @@ impl Default for AppConfig {
             hide_inactive_players: false,
             custom_play_icon: None,
             custom_pause_icon: None,
+            custom_next_icon: None,
+            custom_previous_icon: None,
             show_controls: false
         }
     }
@@ -103,6 +109,14 @@ impl ConfigManager {
 
     pub fn get_custom_pause_icon(&self) -> Option<String> {
         self.app_config.custom_pause_icon.clone()
+    }
+
+    pub fn get_custom_next_icon(&self) -> Option<String> {
+        self.app_config.custom_next_icon.clone()
+    }
+
+    pub fn get_custom_previous_icon(&self) -> Option<String> {
+        self.app_config.custom_previous_icon.clone()
     }
 
     pub fn get_show_controls(&self) -> bool {
