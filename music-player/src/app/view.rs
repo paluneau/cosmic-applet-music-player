@@ -22,6 +22,25 @@ impl AppIcon {
     }
 }
 
+pub fn resolve_playback_icon(
+    config_manager: Option<&crate::config::ConfigManager>,
+    icon: &AppIcon,
+) -> cosmic::widget::icon::Handle {
+    let custom_path = config_manager.and_then(|config| match icon {
+        AppIcon::Playing => config.get_custom_play_icon(),
+        AppIcon::Paused => config.get_custom_pause_icon(),
+    });
+
+    match custom_path {
+        Some(path) if !path.is_empty() => {
+            cosmic::widget::icon::from_path(std::path::PathBuf::from(path))
+        }
+        _ => cosmic::widget::icon::from_name(icon.to_str())
+            .symbolic(true)
+            .into(),
+    }
+}
+
 pub fn view(app: &CosmicAppletMusic) -> Element<'_, Message> {
     // Check if in multi-player mode
     let show_all_players = app
@@ -53,11 +72,13 @@ pub fn view(app: &CosmicAppletMusic) -> Element<'_, Message> {
 
     use cosmic::iced::mouse;
 
+    let icon_handle = resolve_playback_icon(app.config_manager.as_ref(), &icon);
+
     cosmic::widget::autosize::autosize(
         cosmic::widget::mouse_area(
             app.core
                 .applet
-                .icon_button(icon.to_str())
+                .icon_button_from_handle(icon_handle)
                 .on_press_down(Message::TogglePopup),
         )
         .on_scroll(|delta| match delta {

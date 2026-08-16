@@ -11,6 +11,10 @@ pub struct AppConfig {
     pub selected_player: Option<String>,
     pub show_all_players: bool,
     pub hide_inactive_players: bool,
+    #[serde(default)]
+    pub custom_play_icon: Option<String>,
+    #[serde(default)]
+    pub custom_pause_icon: Option<String>,
 }
 
 impl Default for AppConfig {
@@ -21,6 +25,8 @@ impl Default for AppConfig {
             selected_player: None,
             show_all_players: false,
             hide_inactive_players: false,
+            custom_play_icon: None,
+            custom_pause_icon: None,
         }
     }
 }
@@ -87,6 +93,14 @@ impl ConfigManager {
     pub fn set_hide_inactive_players(&mut self, hide_inactive: bool) -> anyhow::Result<()> {
         self.app_config.hide_inactive_players = hide_inactive;
         self.save_config()
+    }
+
+    pub fn get_custom_play_icon(&self) -> Option<String> {
+        self.app_config.custom_play_icon.clone()
+    }
+
+    pub fn get_custom_pause_icon(&self) -> Option<String> {
+        self.app_config.custom_pause_icon.clone()
     }
 
     fn save_config(&self) -> anyhow::Result<()> {
