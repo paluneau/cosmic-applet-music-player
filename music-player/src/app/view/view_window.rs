@@ -200,6 +200,19 @@ fn view_settings_tab(app: &CosmicAppletMusic, _space_s: f32, space_m: f32) -> El
 
     let mut settings_content = cosmic::widget::column().spacing(space_m);
 
+    // Controls customization
+    settings_content = settings_content.push(cosmic::widget::text::title4("Controls Customization"));
+
+    if let Some(ref config) = app.config_manager {
+        let show_controls = config.get_show_controls();
+
+        let show_controls_checkbox =
+            cosmic::widget::checkbox("Show controls", show_controls)
+                .on_toggle(Message::ToggleShowControls);
+
+        settings_content = settings_content.push(show_controls_checkbox);
+    }
+    
     // Multi-player mode section
     settings_content = settings_content.push(cosmic::widget::text::title4("Multi-Player Mode"));
 

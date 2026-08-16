@@ -75,6 +75,7 @@ pub enum Message {
     AlbumArtLoadedPlayer(String, Option<cosmic::iced::widget::image::Handle>),
     ToggleShowAllPlayers(bool),
     ToggleHideInactive(bool),
+    ToggleShowControls(bool)
 }
 
 impl Application for CosmicAppletMusic {
@@ -160,6 +161,7 @@ impl Application for CosmicAppletMusic {
             }
             Message::ToggleShowAllPlayers(enabled) => self.handle_toggle_show_all_players(enabled),
             Message::ToggleHideInactive(enabled) => self.handle_toggle_hide_inactive(enabled),
+            Message::ToggleShowControls(enabled) => self.handle_toggle_show_controls(enabled)
         }
     }
 
@@ -476,4 +478,13 @@ impl CosmicAppletMusic {
         }
         Task::none()
     }
+
+    fn handle_toggle_show_controls(&mut self, enabled: bool) -> Task<Message> {
+        if let Some(ref mut config) = self.config_manager {
+            let _ = config.set_show_controls(enabled);
+        }
+        Task::none()
+    }
+
+
 }
