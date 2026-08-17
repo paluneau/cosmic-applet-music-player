@@ -78,7 +78,8 @@ pub enum Message {
     ToggleShowControls(bool),
     ToggleShowInfoPane(bool),
     SwitchInfoPaneSide(bool),
-    UpdateInfoPaneSize(u32)
+    UpdateInfoPaneSize(u32),
+    UpdateAlbumSize(u32)
 }
 
 impl Application for CosmicAppletMusic {
@@ -167,7 +168,8 @@ impl Application for CosmicAppletMusic {
             Message::ToggleShowControls(enabled) => self.handle_toggle_show_controls(enabled),
             Message::ToggleShowInfoPane(enabled) => self.handle_toggle_show_info_pane(enabled),
             Message::SwitchInfoPaneSide(isleft) => self.handle_switch_info_pane_side(isleft),
-            Message::UpdateInfoPaneSize(size) => self.handle_update_info_pane_size(size)
+            Message::UpdateInfoPaneSize(size) => self.handle_update_info_pane_size(size),
+            Message::UpdateAlbumSize(size) => self.handle_update_album_size(size)
 
         }
     }
@@ -510,6 +512,13 @@ impl CosmicAppletMusic {
     fn handle_update_info_pane_size(&mut self, size: u32) -> Task<Message> {
         if let Some(ref mut config) = self.config_manager {
             let _ = config.set_info_pane_width(size);
+        }
+        Task::none()
+    }
+
+    fn handle_update_album_size(&mut self, size: u32) -> Task<Message> {
+        if let Some(ref mut config) = self.config_manager {
+            let _ = config.set_album_size(size);
         }
         Task::none()
     }

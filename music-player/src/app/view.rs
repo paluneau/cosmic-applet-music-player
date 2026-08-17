@@ -1,7 +1,7 @@
-use crate::app::view::view_window::get_song_info;
+use crate::app::view::view_window::{get_album_cover, get_song_info};
 use crate::app::{CosmicAppletMusic, Message};
 use cosmic::iced::widget::{row,Space};
-use cosmic::widget::{Id, container};
+use cosmic::widget::{Id};
 use cosmic::Element;
 use mpris::PlaybackStatus;
 use std::sync::LazyLock;
@@ -76,7 +76,7 @@ pub fn view(app: &CosmicAppletMusic) -> Element<'_, Message> {
         .config_manager
         .as_ref()
         .map(|config| config.get_info_pane_width())
-        .unwrap_or(0);
+        .unwrap_or(250);
 
     // Gets info pane position
     let info_pane_left = app
@@ -84,6 +84,13 @@ pub fn view(app: &CosmicAppletMusic) -> Element<'_, Message> {
         .as_ref()
         .map(|config| config.get_info_pane_left())
         .unwrap_or(true);
+
+    // Gets ialbum miniature size
+    let album_size = app
+        .config_manager
+        .as_ref()
+        .map(|config| config.get_album_size())
+        .unwrap_or(70);
 
     
 
@@ -165,11 +172,18 @@ pub fn view(app: &CosmicAppletMusic) -> Element<'_, Message> {
             .on_middle_press(Message::MiddleClick);
 
      let info_pane: Option<Element<'_, Message>> = if show_info_pane {
-        Some(
-            container(get_song_info(app, 1.0))
-                .padding(10)
-                .width(info_pane_width as f32)
-                .into(),
+        let float_width = info_pane_width as f32;
+        let float_size = album_size as f32;
+        Some(row![
+            get_song_info(app, 1.0)
+            .padding(10)
+            .height(float_size)
+            .max_width(float_width - float_size),
+            get_album_cover(app, float_size)
+        ]
+        .align_y(cosmic::iced::Alignment::Center)
+        .width(float_width)
+        .into()
         )
     } else {
         None

@@ -25,7 +25,10 @@ pub struct AppConfig {
     #[serde(default)]
     pub info_pane_left: bool, //true = Left, false = Right
     #[serde(default)]
-    pub info_pane_width: u32
+    pub info_pane_width: u32,
+    #[serde(default)]
+    pub album_size: u32,
+
 
 }
 
@@ -44,7 +47,8 @@ impl Default for AppConfig {
             show_controls: false,
             show_info_pane: false,
             info_pane_left: true,
-            info_pane_width: 20
+            info_pane_width: 250,
+            album_size: 70
         }
     }
 }
@@ -165,6 +169,14 @@ impl ConfigManager {
         self.save_config()
     }
 
+    pub fn get_album_size(&self) -> u32 {
+        self.app_config.album_size
+    }
+
+    pub fn set_album_size(&mut self, size: u32) -> anyhow::Result<()> {
+        self.app_config.album_size = size;
+        self.save_config()
+    }
 
 
     fn save_config(&self) -> anyhow::Result<()> {
