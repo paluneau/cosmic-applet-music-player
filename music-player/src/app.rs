@@ -75,7 +75,10 @@ pub enum Message {
     AlbumArtLoadedPlayer(String, Option<cosmic::iced::widget::image::Handle>),
     ToggleShowAllPlayers(bool),
     ToggleHideInactive(bool),
-    ToggleShowControls(bool)
+    ToggleShowControls(bool),
+    ToggleShowInfoPane(bool),
+    SwitchInfoPaneSide(bool),
+    UpdateInfoPaneSize(u32)
 }
 
 impl Application for CosmicAppletMusic {
@@ -161,7 +164,11 @@ impl Application for CosmicAppletMusic {
             }
             Message::ToggleShowAllPlayers(enabled) => self.handle_toggle_show_all_players(enabled),
             Message::ToggleHideInactive(enabled) => self.handle_toggle_hide_inactive(enabled),
-            Message::ToggleShowControls(enabled) => self.handle_toggle_show_controls(enabled)
+            Message::ToggleShowControls(enabled) => self.handle_toggle_show_controls(enabled),
+            Message::ToggleShowInfoPane(enabled) => self.handle_toggle_show_info_pane(enabled),
+            Message::SwitchInfoPaneSide(isleft) => self.handle_switch_info_pane_side(isleft),
+            Message::UpdateInfoPaneSize(size) => self.handle_update_info_pane_size(size)
+
         }
     }
 
@@ -482,6 +489,27 @@ impl CosmicAppletMusic {
     fn handle_toggle_show_controls(&mut self, enabled: bool) -> Task<Message> {
         if let Some(ref mut config) = self.config_manager {
             let _ = config.set_show_controls(enabled);
+        }
+        Task::none()
+    }
+
+    fn handle_toggle_show_info_pane(&mut self, enabled: bool) -> Task<Message> {
+        if let Some(ref mut config) = self.config_manager {
+            let _ = config.set_show_info_pane(enabled);
+        }
+        Task::none()
+    }
+
+    fn handle_switch_info_pane_side(&mut self, isleft: bool) -> Task<Message> {
+        if let Some(ref mut config) = self.config_manager {
+            let _ = config.set_info_pane_left(isleft);
+        }
+        Task::none()
+    }
+
+    fn handle_update_info_pane_size(&mut self, size: u32) -> Task<Message> {
+        if let Some(ref mut config) = self.config_manager {
+            let _ = config.set_info_pane_width(size);
         }
         Task::none()
     }
