@@ -293,8 +293,12 @@ impl CosmicAppletMusic {
         } else {
             let _ = self.music_controller.find_active_player();
         }
-        let info = self.music_controller.get_player_info();
-        Task::done(cosmic::Action::App(Message::UpdatePlayerInfo(info)))
+        // A failed read means D-Bus hiccuped, not that playback stopped. Emit
+        // nothing and keep the last known state on screen for another tick.
+        match self.music_controller.get_player_info() {
+            Some(info) => Task::done(cosmic::Action::App(Message::UpdatePlayerInfo(info))),
+            None => Task::none(),
+        }
     }
 
     fn handle_update_status(&mut self, status: PlaybackStatus) -> Task<Message> {
