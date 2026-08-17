@@ -1,3 +1,4 @@
+use crate::app::view::view_window::get_song_info;
 use crate::app::{CosmicAppletMusic, Message};
 use cosmic::iced::widget::{row,Space};
 use cosmic::widget::{Id, container};
@@ -77,7 +78,7 @@ pub fn view(app: &CosmicAppletMusic) -> Element<'_, Message> {
         .map(|config| config.get_info_pane_width())
         .unwrap_or(0);
 
-    // Gets info pane siposition
+    // Gets info pane position
     let info_pane_left = app
         .config_manager
         .as_ref()
@@ -165,7 +166,7 @@ pub fn view(app: &CosmicAppletMusic) -> Element<'_, Message> {
 
      let info_pane: Option<Element<'_, Message>> = if show_info_pane {
         Some(
-            container("Test pane")
+            container(get_song_info(app, 1.0))
                 .padding(10)
                 .width(info_pane_width as f32)
                 .into(),

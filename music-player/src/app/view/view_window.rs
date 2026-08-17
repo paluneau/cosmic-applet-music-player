@@ -1,5 +1,5 @@
 use crate::app::{CosmicAppletMusic, Message, PopupTab};
-use cosmic::{Element, theme, widget::Slider};
+use cosmic::{Element, theme, widget::Slider, widget::Column};
 use mpris::PlaybackStatus;
 
 pub fn view_window(app: &CosmicAppletMusic, _id: cosmic::iced::window::Id) -> Element<'_, Message> {
@@ -55,6 +55,13 @@ pub fn view_window(app: &CosmicAppletMusic, _id: cosmic::iced::window::Id) -> El
                 .max_height(600.0),
         )
         .into()
+}
+
+pub fn get_song_info<'a>(app : &'a CosmicAppletMusic, space : f32) -> Column<'a, Message> {
+    cosmic::widget::column()
+        .spacing(space)
+        .push(cosmic::widget::text::title4(&app.player_info.title))
+        .push(cosmic::widget::text::body(&app.player_info.artist))
 }
 
 fn view_controls_tab(app: &CosmicAppletMusic, space_s: f32, space_m: f32) -> Element<'_, Message> {
@@ -131,10 +138,7 @@ fn view_controls_tab(app: &CosmicAppletMusic, space_s: f32, space_m: f32) -> Ele
         .class(cosmic::theme::Container::Card)
     };
 
-    let song_info = cosmic::widget::column()
-        .spacing(space_s)
-        .push(cosmic::widget::text::title4(&app.player_info.title))
-        .push(cosmic::widget::text::body(&app.player_info.artist));
+    let song_info = get_song_info(app, space_s);
 
     let info_row = cosmic::widget::row()
         .spacing(space_m)
