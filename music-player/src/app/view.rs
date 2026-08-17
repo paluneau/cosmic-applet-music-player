@@ -1,10 +1,12 @@
-use crate::app::view::view_window::get_song_info;
+use crate::app::view::view_window::{get_album_cover, get_song_info};
 use crate::app::{CosmicAppletMusic, Message};
 use cosmic::iced::widget::{row,Space};
-use cosmic::widget::{Id, container};
+use cosmic::widget::{Id};
 use cosmic::Element;
 use mpris::PlaybackStatus;
 use std::sync::LazyLock;
+
+const COVER_SIZE : f32 = 70.0;
 
 pub mod view_window;
 
@@ -165,11 +167,17 @@ pub fn view(app: &CosmicAppletMusic) -> Element<'_, Message> {
             .on_middle_press(Message::MiddleClick);
 
      let info_pane: Option<Element<'_, Message>> = if show_info_pane {
-        Some(
-            container(get_song_info(app, 1.0))
-                .padding(10)
-                .width(info_pane_width as f32)
-                .into(),
+        let float_width = info_pane_width as f32;
+        Some(row![
+            get_song_info(app, 1.0)
+            .padding(10)
+            .height(COVER_SIZE)
+            .max_width(float_width - COVER_SIZE),
+            get_album_cover(app)
+        ]
+        .align_y(cosmic::iced::Alignment::Center)
+        .width(float_width)
+        .into()
         )
     } else {
         None
