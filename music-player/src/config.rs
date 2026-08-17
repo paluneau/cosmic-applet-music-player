@@ -19,7 +19,14 @@ pub struct AppConfig {
     pub custom_next_icon: Option<String>,
     #[serde(default)]
     pub custom_previous_icon: Option<String>,
-    pub show_controls: bool
+    pub show_controls: bool,
+    #[serde(default)]
+    pub show_info_pane: bool,
+    #[serde(default)]
+    pub info_pane_left: bool, //true = Left, false = Right
+    #[serde(default)]
+    pub info_pane_width: u32
+
 }
 
 impl Default for AppConfig {
@@ -34,7 +41,10 @@ impl Default for AppConfig {
             custom_pause_icon: None,
             custom_next_icon: None,
             custom_previous_icon: None,
-            show_controls: false
+            show_controls: false,
+            show_info_pane: false,
+            info_pane_left: true,
+            info_pane_width: 20
         }
     }
 }
@@ -127,6 +137,35 @@ impl ConfigManager {
         self.app_config.show_controls = show_buttons;
         self.save_config()
     }
+
+    pub fn get_show_info_pane(&self) -> bool {
+        self.app_config.show_info_pane
+    }
+
+    pub fn set_show_info_pane(&mut self, show_info_pane: bool) -> anyhow::Result<()> {
+        self.app_config.show_info_pane = show_info_pane;
+        self.save_config()
+    }
+
+    pub fn get_info_pane_left(&self) -> bool {
+        self.app_config.info_pane_left
+    }
+
+    pub fn set_info_pane_left(&mut self, info_pane_left: bool) -> anyhow::Result<()> {
+        self.app_config.info_pane_left = info_pane_left;
+        self.save_config()
+    }
+
+    pub fn get_info_pane_width(&self) -> u32 {
+        self.app_config.info_pane_width
+    }
+
+    pub fn set_info_pane_width(&mut self, info_pane_width: u32) -> anyhow::Result<()> {
+        self.app_config.info_pane_width = info_pane_width;
+        self.save_config()
+    }
+
+
 
     fn save_config(&self) -> anyhow::Result<()> {
         self.config.set("config", &self.app_config)?;

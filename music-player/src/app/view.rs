@@ -1,6 +1,6 @@
 use crate::app::{CosmicAppletMusic, Message};
 use cosmic::iced::widget::{row,Space};
-use cosmic::widget::Id;
+use cosmic::widget::{Id, container};
 use cosmic::Element;
 use mpris::PlaybackStatus;
 use std::sync::LazyLock;
@@ -62,6 +62,28 @@ pub fn view(app: &CosmicAppletMusic) -> Element<'_, Message> {
         .as_ref()
         .map(|config| config.get_show_controls())
         .unwrap_or(false);
+
+    // Check if info pane should be displayed
+    let show_info_pane = app
+        .config_manager
+        .as_ref()
+        .map(|config| config.get_show_info_pane())
+        .unwrap_or(false);
+
+    // Gets info pane size
+    let info_pane_width = app
+        .config_manager
+        .as_ref()
+        .map(|config| config.get_info_pane_width())
+        .unwrap_or(0);
+
+    // Gets info pane siposition
+    let info_pane_left = app
+        .config_manager
+        .as_ref()
+        .map(|config| config.get_info_pane_left())
+        .unwrap_or(true);
+
     
 
     let icon = if show_all_players {
@@ -140,17 +162,38 @@ pub fn view(app: &CosmicAppletMusic) -> Element<'_, Message> {
                 }
             })
             .on_middle_press(Message::MiddleClick);
+
+     let info_pane: Option<Element<'_, Message>> = if show_info_pane {
+        Some(
+            container("Test pane")
+                .padding(10)
+                .width(info_pane_width as f32)
+                .into(),
+        )
+    } else {
+        None
+    };
+
+    let (left_pane, right_pane) = if info_pane_left {
+        (info_pane, None)
+    } else {
+        (None, info_pane)
+    };
     
     // Automatic resize will not work in windowed mode,
     // but it works fine if the applet is in the dock/panel.
     // Windowed mode is not the goal of this app anyway.
     cosmic::widget::autosize::autosize(
         row![
+            left_pane
+            .unwrap_or_else(|| Space::new(0, 0).into()),
             back_button
             .unwrap_or_else(|| Space::new(0, 0).into()),
             main_button,
             skip_button
             .unwrap_or_else(|| Space::new(0, 0).into()),
+            right_pane
+            .unwrap_or_else(|| Space::new(0, 0).into())
         ]
         .align_y(cosmic::iced::Alignment::Center),
         AUTOSIZE_MAIN_ID.clone(),

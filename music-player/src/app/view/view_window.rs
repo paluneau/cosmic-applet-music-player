@@ -1,5 +1,5 @@
 use crate::app::{CosmicAppletMusic, Message, PopupTab};
-use cosmic::{theme, Element};
+use cosmic::{Element, theme, widget::Slider};
 use mpris::PlaybackStatus;
 
 pub fn view_window(app: &CosmicAppletMusic, _id: cosmic::iced::window::Id) -> Element<'_, Message> {
@@ -211,6 +211,34 @@ fn view_settings_tab(app: &CosmicAppletMusic, _space_s: f32, space_m: f32) -> El
                 .on_toggle(Message::ToggleShowControls);
 
         settings_content = settings_content.push(show_controls_checkbox);
+
+        let show_info_pane = config.get_show_info_pane();
+
+        let show_info_pane_checkbox =
+            cosmic::widget::checkbox("Show info pane", show_info_pane)
+                .on_toggle(Message::ToggleShowInfoPane);
+
+        settings_content = settings_content.push(show_info_pane_checkbox);
+
+        // Show these options only if info pane is displayed
+        if show_info_pane {
+            let info_pane_side_left = config.get_info_pane_left();
+
+            let info_pane_side_checkbox =
+            cosmic::widget::checkbox("Info pane to the left", info_pane_side_left)
+                .on_toggle(Message::SwitchInfoPaneSide);
+
+            settings_content = settings_content.push(info_pane_side_checkbox);
+
+            let info_pane_width = config.get_info_pane_width();
+
+            let info_pane_size_slider: Slider<'_, u32, Message, cosmic::Theme>=
+            cosmic::widget::slider(20..=500, info_pane_width, Message::UpdateInfoPaneSize);
+
+            settings_content = settings_content.push(info_pane_size_slider);
+        }
+
+
     }
     
     // Multi-player mode section
